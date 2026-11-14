@@ -63,4 +63,21 @@ class SongController extends Controller
             'liked_count' => $user->likedSongs()->count(),
         ]);
     }
+
+    public function liked(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $likedSongs = $request->user()
+            ->likedSongs()
+            ->with(['artist', 'album'])
+            ->latest('liked_songs.created_at')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Liked songs retrieved successfully.',
+            'total_songs' => $likedSongs->count(),
+            'total_duration' => $likedSongs->sum('duration'),
+            'data' => $likedSongs,
+        ]);
+    }
 }

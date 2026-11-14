@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 // Authentication (Sanctum)
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/categories', [SearchController::class, 'storeCategory']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
@@ -29,3 +30,9 @@ Route::delete('/playlists/{playlist}/songs/{song}', [PlaylistController::class, 
 
 // Live Search
 Route::get('/search', [SearchController::class, 'index']);
+
+// Publik
+Route::get('/browse', [SearchController::class, 'browse']);
+
+// Laikss
+Route::get('/liked-songs', [SongController::class, 'liked']);
