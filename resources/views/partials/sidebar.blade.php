@@ -1,7 +1,7 @@
 @php
     $nav = [
         ['label' => 'Home', 'icon' => 'house', 'href' => route('home'), 'active' => request()->routeIs('home')],
-        ['label' => 'Search', 'icon' => 'search', 'href' => '#', 'active' => false],
+        ['label' => 'Search', 'icon' => 'search', 'href' => route('search'), 'active' => request()->routeIs('search')],
     ];
     $libraryFilters = ['Playlists', 'Artists', 'Albums'];
 @endphp

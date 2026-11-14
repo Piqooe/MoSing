@@ -1,7 +1,7 @@
 @php
     $tabs = [
         ['label' => 'Home', 'icon' => 'house', 'href' => route('home'), 'active' => request()->routeIs('home')],
-        ['label' => 'Search', 'icon' => 'search', 'href' => '#', 'active' => false],
+        ['label' => 'Search', 'icon' => 'search', 'href' => route('search'), 'active' => request()->routeIs('search')],
         ['label' => 'Library', 'icon' => 'library', 'href' => '#', 'active' => false],
         ['label' => 'Liked', 'icon' => 'heart', 'href' => '#', 'active' => false],
     ];
