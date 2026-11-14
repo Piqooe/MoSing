@@ -155,5 +155,18 @@ class DatabaseSeeder extends Seeder
             $songs['hold-on-to-summer']->id => ['position' => 2],
             $songs['starlight-avenue']->id => ['position' => 3],
         ]);
+
+        $categories = [
+            ['name' => 'Pop Hits', 'slug' => 'pop-hits', 'color' => 'from-pink-500 to-rose-600'],
+            ['name' => 'Chill & Lo-Fi', 'slug' => 'chill-lofi', 'color' => 'from-indigo-500 to-blue-600'],
+            ['name' => 'Indie Lokal', 'slug' => 'indie-lokal', 'color' => 'from-emerald-500 to-teal-600'],
+            ['name' => 'Rock & Alternative', 'slug' => 'rock-alternative', 'color' => 'from-orange-500 to-red-600'],
+            ['name' => 'R&B / Soul', 'slug' => 'rnb-soul', 'color' => 'from-purple-500 to-violet-600'],
+            ['name' => 'Focus & Study', 'slug' => 'focus-study', 'color' => 'from-cyan-500 to-sky-600'],
+        ];
+
+        foreach ($categories as $cat) {
+            \App\Models\Category::firstOrCreate(['slug' => $cat['slug']], $cat);
+        }
     }
 }
