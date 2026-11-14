@@ -13,6 +13,12 @@
         </button>
     </div>
 
+    @hasSection('topbar-center')
+        <div class="flex min-w-0 flex-1 justify-center">
+            @yield('topbar-center')
+        </div>
+    @endif
+
     <div class="flex items-center gap-3">
         <button type="button" aria-label="Notifications"
             class="flex size-8 items-center justify-center rounded-full bg-black/70 text-white transition hover:scale-105 hover:bg-black">
