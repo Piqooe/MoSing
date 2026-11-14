@@ -67,7 +67,7 @@ class DummyMusic
         ], 'slug');
     }
 
-    public static function popularSongs(): Collection
+    public static function songs(): Collection
     {
         $albums = self::albums();
 
@@ -77,18 +77,61 @@ class DummyMusic
             ['Neon Rain', 'neon-horizon', 245, 29550118, true],
             ['Kota Tanpa Tidur', 'senja-di-kota', 231, 22104987, false],
             ['Paper Hearts', 'paper-planets', 179, 18744302, false],
-        ])->map(fn ($s, $i) => self::song($i + 1, $s[0], $albums[$s[1]], $s[2], $s[3], $s[4]));
+            ['Blue Tide', 'ocean-letters', 216, 15320877, true],
+            ['Electric Bloom', 'electric-bloom', 192, 27410556, false],
+            ['Thunder in May', 'quiet-storms', 261, 9873120, true],
+            ['Shibuya Lights', 'lost-in-tokyo', 207, 12045398, false],
+            ['Velvet Moon', 'velvet-nights', 238, 8412907, false],
+            ['Glass Garden', 'quiet-storms', 254, 4120566, false],
+            ['Morning Static', 'lost-in-tokyo', 189, 3388410, false],
+            ['Slow Orbit', 'midnight-echoes', 243, 6702215, true],
+            ['Low Tide Hours', 'ocean-letters', 228, 2954083, false],
+            ['Pagi yang Sama', 'senja-di-kota', 204, 7831442, true],
+            ['Jalan Pulang', 'after-rain', 219, 11208734, false],
+            ['Teras Rumah', 'after-rain', 196, 5126390, false],
+            ['Wildflower', 'wildflower-season', 211, 13590221, true],
+            ['Gerimis Kecil', 'senja-di-kota', 183, 4687015, false],
+            ['Midnight Freeway', 'neon-horizon', 252, 10334871, false],
+            ['Afterglow Exit', 'electric-bloom', 224, 8890214, true],
+            ['Tail Lights', 'velvet-nights', 233, 3901762, false],
+            ['Run the Sky', 'golden-hour-drive', 187, 6213548, false],
+            ['Voltage', 'electric-bloom', 171, 9452610, false],
+        ])
+            ->map(fn ($s, $i) => self::song($i + 1, $s[0], $albums[$s[1]], $s[2], $s[3], $s[4]))
+            ->keyBy('slug');
+    }
+
+    public static function popularSongs(): Collection
+    {
+        return self::pick(self::songs(), ['starlight-avenue', 'hold-on-to-summer', 'neon-rain', 'kota-tanpa-tidur', 'paper-hearts']);
     }
 
     public static function playlists(): Collection
     {
+        $catalog = self::songs();
+        $addedDaysAgo = [0, 1, 3, 12, 17, 24, 36, 45, 61, 76, 90, 104];
+
         return self::keyed([
-            ['Chill Vibes', 'Lo-fi beats and soft acoustic for slow evenings.', 'MoSing', 'horizon', 'violet', 42],
-            ['Focus Flow', 'Instrumental tracks to keep you in the zone.', 'Alya Putri', 'orb', 'green', 35],
-            ['Indie Pagi', 'Fresh local indie to start your morning right.', 'Alya Putri', 'bands', 'pink', 28],
-            ['Late Night Drive', 'Synthwave and city pop for the open road.', 'MoSing', 'rings', 'teal', 50],
-            ['Workout Energy', 'High-BPM bangers to push your limits.', 'Alya Putri', 'horizon', 'rose', 46],
-            ['Lofi Study', 'Calm, steady beats for deep study sessions.', 'Alya Putri', 'orb', 'lime', 64],
+            ['Chill Vibes', 'Lo-fi beats and soft acoustic for slow evenings.', 'MoSing', 'horizon', 'violet', true, 1284902, [
+                'starlight-avenue', 'hold-on-to-summer', 'neon-rain', 'kota-tanpa-tidur', 'paper-hearts',
+                'blue-tide', 'electric-bloom', 'thunder-in-may', 'shibuya-lights', 'velvet-moon',
+            ]],
+            ['Focus Flow', 'Instrumental tracks to keep you in the zone.', 'Alya Putri', 'orb', 'green', true, null, [
+                'glass-garden', 'morning-static', 'slow-orbit', 'low-tide-hours', 'paper-hearts', 'blue-tide',
+            ]],
+            ['Indie Pagi', 'Fresh local indie to start your morning right.', 'Alya Putri', 'bands', 'pink', true, null, [
+                'pagi-yang-sama', 'kota-tanpa-tidur', 'jalan-pulang', 'teras-rumah', 'wildflower', 'gerimis-kecil', 'paper-hearts',
+            ]],
+            ['Late Night Drive', 'Synthwave and city pop for the open road.', 'MoSing', 'rings', 'teal', true, 862417, [
+                'midnight-freeway', 'neon-rain', 'velvet-moon', 'afterglow-exit', 'shibuya-lights', 'starlight-avenue', 'tail-lights', 'electric-bloom',
+            ]],
+            ['Workout Energy', 'High-BPM bangers to push your limits.', 'Alya Putri', 'horizon', 'rose', true, null, [
+                'voltage', 'run-the-sky', 'electric-bloom', 'afterglow-exit', 'hold-on-to-summer', 'thunder-in-may', 'midnight-freeway',
+            ]],
+            ['Lofi Study', 'Calm, steady beats for deep study sessions.', 'Alya Putri', 'orb', 'lime', true, null, [
+                'slow-orbit', 'blue-tide', 'glass-garden', 'low-tide-hours', 'morning-static', 'velvet-moon', 'jalan-pulang', 'gerimis-kecil', 'teras-rumah',
+            ]],
+            ['My Playlist #4', null, 'Alya Putri', null, null, false, null, []],
         ], fn ($p, $i) => [
             'id' => $i + 1,
             'title' => $p[0],
@@ -96,8 +139,17 @@ class DummyMusic
             'description' => $p[1],
             'owner' => ['name' => $p[2]],
             'cover_url' => null,
-            'artwork' => ['pattern' => $p[3], 'palette' => $p[4]],
-            'songs_count' => $p[5],
+            'artwork' => $p[3] ? ['pattern' => $p[3], 'palette' => $p[4]] : null,
+            'is_public' => $p[5],
+            'saves' => $p[6],
+            'songs_count' => count($p[7]),
+            'songs' => collect($p[7])->values()->map(fn ($slug, $pos) => [
+                ...(array) $catalog[$slug],
+                'pivot' => [
+                    'position' => $pos + 1,
+                    'created_at' => now()->startOfDay()->subDays($addedDaysAgo[$pos] ?? $pos * 7)->toIso8601String(),
+                ],
+            ])->all(),
         ], 'slug');
     }
 
@@ -123,6 +175,7 @@ class DummyMusic
             self::libraryItem('playlist', $p['late-night-drive']),
             self::libraryItem('playlist', $p['workout-energy']),
             self::libraryItem('playlist', $p['lofi-study']),
+            self::libraryItem('playlist', $p['my-playlist-4']),
         ]);
     }
 
@@ -164,7 +217,7 @@ class DummyMusic
             'newReleases' => self::pick($albums, ['electric-bloom', 'quiet-storms', 'lost-in-tokyo', 'velvet-nights', 'wildflower-season', 'after-rain']),
             'popularSongs' => self::popularSongs(),
             'featuredAlbums' => self::pick($albums, ['midnight-echoes', 'neon-horizon', 'golden-hour-drive', 'ocean-letters', 'paper-planets', 'senja-di-kota']),
-            'featuredPlaylists' => $playlists->values(),
+            'featuredPlaylists' => self::pick($playlists, ['chill-vibes', 'focus-flow', 'indie-pagi', 'late-night-drive', 'workout-energy', 'lofi-study']),
             'recommendedArtists' => self::pick($artists, ['luna-arden', 'sora-malik', 'nova', 'elio-hart', 'nadia-rae', 'aruna']),
             'recommendedMusic' => self::pick($albums, ['electric-bloom', 'quiet-storms', 'lost-in-tokyo', 'velvet-nights', 'wildflower-season', 'after-rain']),
         ];
@@ -175,6 +228,7 @@ class DummyMusic
         return self::obj([
             'id' => $id,
             'title' => $title,
+            'slug' => str($title)->slug()->toString(),
             'artist' => (array) $album->artist,
             'album' => ['id' => $album->id, 'title' => $album->title],
             'cover_url' => $album->cover_url,
@@ -189,6 +243,7 @@ class DummyMusic
     {
         return self::obj([
             'type' => $type,
+            'slug' => $item->slug,
             'title' => $item->title ?? $item->name,
             'subtitle' => $type === 'artist' ? 'Artist' : 'Playlist • '.$item->owner->name,
             'cover_url' => $item->cover_url ?? $item->photo_url ?? null,

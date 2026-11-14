@@ -30,5 +30,7 @@
         @include('partials.player')
         @include('partials.bottom-nav')
     </div>
+
+    @include('partials.sidebar-scroll')
 </body>
 </html>
