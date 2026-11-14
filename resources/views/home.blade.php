@@ -36,7 +36,8 @@
             <div class="grid grid-cols-2 gap-2 md:gap-3 xl:grid-cols-4 max-md:[&>*:nth-child(n+7)]:hidden md:max-xl:[&>*:nth-child(n+5)]:hidden">
                 @foreach ($recentlyPlayed as $item)
                     <x-quick-card :title="$item->title" :cover="$item->cover_url" :art="$item->artwork"
-                        :playing="$item->is_playing" :liked="$item->type === 'liked'" />
+                        :playing="$item->is_playing" :liked="$item->type === 'liked'"
+                        :href="$item->type === 'liked' ? route('liked-songs') : '#'" />
                 @endforeach
             </div>
         </section>

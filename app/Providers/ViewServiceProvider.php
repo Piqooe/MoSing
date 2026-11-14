@@ -10,6 +10,6 @@ class ViewServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        View::composer(['layouts.app', 'home', 'search', 'ui-kit', 'playlist'], AppLayoutComposer::class);
+        View::composer(['layouts.app', 'home', 'search', 'ui-kit', 'playlist', 'liked-songs'], AppLayoutComposer::class);
     }
 }

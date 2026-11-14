@@ -31,6 +31,17 @@
         @include('partials.bottom-nav')
     </div>
 
+    <div data-toast role="status" aria-live="polite" hidden
+        class="fixed top-4 right-4 z-[100] flex max-w-[calc(100vw-2rem)] items-center gap-3 rounded-lg bg-toast px-4 py-3 text-sm shadow-[0_8px_24px_rgb(0_0_0/0.55)] ring-1 ring-white/10 md:top-6 md:right-6">
+        <x-lucide-circle-check class="size-4 shrink-0 text-success" />
+        <span data-toast-message class="min-w-0 flex-1"></span>
+        <button type="button" data-toast-undo hidden class="shrink-0 font-semibold text-accent hover:underline">Undo</button>
+        <button type="button" data-toast-close aria-label="Dismiss notification"
+            class="shrink-0 text-text-secondary transition hover:text-white">
+            <x-lucide-x class="size-4" />
+        </button>
+    </div>
+
     @include('partials.sidebar-scroll')
 </body>
 </html>
