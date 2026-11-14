@@ -4,11 +4,15 @@
         ['label' => 'Search', 'icon' => 'search', 'href' => route('search'), 'active' => request()->routeIs('search')],
     ];
     $libraryFilters = ['Playlists', 'Artists', 'Albums'];
+    $currentPlaylist = request()->routeIs('playlists.show') ? request()->route('slug') : null;
+    $libraryHref = fn ($item) => $item->type === 'playlist' && ($item->slug ?? null) ? route('playlists.show', $item->slug) : '#';
+    $libraryActive = fn ($item) => $item->type === 'playlist' && $currentPlaylist !== null && ($item->slug ?? null) === $currentPlaylist;
+    $libraryEmpty = fn ($item) => empty((array) ($item->artwork ?? [])) && empty($item->cover_url);
 @endphp
 
 <aside class="hidden w-[72px] shrink-0 flex-col overflow-hidden rounded-lg bg-sidebar md:flex lg:w-72" aria-label="Sidebar">
 
-    <div class="flex h-full flex-col items-center gap-2.5 overflow-y-auto px-3 py-5 scrollbar-none lg:hidden">
+    <div data-sidebar-scroll="rail" class="flex h-full flex-col items-center gap-2.5 overflow-y-auto px-3 py-5 scrollbar-none lg:hidden">
         <a href="{{ route('home') }}" class="mb-3 flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent" aria-label="MoSing">
             <x-lucide-audio-waveform class="size-5 text-black" />
         </a>
@@ -31,11 +35,16 @@
         <div class="h-px w-12 shrink-0 bg-border"></div>
 
         @foreach ($library as $item)
-            <a href="#" title="{{ $item->title }}" aria-label="{{ $item->title }}" class="shrink-0 transition-opacity hover:opacity-80">
+            <a href="{{ $libraryHref($item) }}" title="{{ $item->title }}" aria-label="{{ $item->title }}"
+                @if ($libraryActive($item)) aria-current="page" @endif
+                @class([
+                    'shrink-0 rounded transition-opacity hover:opacity-80',
+                    'ring-2 ring-accent ring-offset-2 ring-offset-sidebar' => $libraryActive($item),
+                ])>
                 @if ($item->type === 'liked')
                     <x-liked-tile class="size-12 rounded" />
                 @else
-                    <x-cover :src="$item->cover_url" :art="$item->artwork" :seed="$item->title" :artist="$item->type === 'artist'"
+                    <x-cover :src="$item->cover_url" :art="$item->artwork" :seed="$item->title" :artist="$item->type === 'artist'" :empty="$libraryEmpty($item)"
                         @class(['size-12', $item->type === 'artist' ? 'rounded-full' : 'rounded']) />
                 @endif
             </a>
@@ -83,7 +92,7 @@
             @endforeach
         </div>
 
-        <div class="-mx-1 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-1">
+        <div data-sidebar-scroll="library" class="-mx-1 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-1">
             <button type="button" class="flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-card">
                 <span class="flex size-12 items-center justify-center rounded border border-border bg-card">
                     <x-lucide-plus class="size-[22px]" />
@@ -92,11 +101,15 @@
             </button>
 
             @foreach ($library as $item)
-                <a href="#" class="flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-card">
+                <a href="{{ $libraryHref($item) }}" @if ($libraryActive($item)) aria-current="page" @endif
+                    @class([
+                        'flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 transition-colors',
+                        $libraryActive($item) ? 'bg-card hover:bg-card-hover' : 'hover:bg-card',
+                    ])>
                     @if ($item->type === 'liked')
                         <x-liked-tile class="size-12 rounded" />
                     @else
-                        <x-cover :src="$item->cover_url" :art="$item->artwork" :seed="$item->title" :artist="$item->type === 'artist'"
+                        <x-cover :src="$item->cover_url" :art="$item->artwork" :seed="$item->title" :artist="$item->type === 'artist'" :empty="$libraryEmpty($item)"
                             @class(['size-12', $item->type === 'artist' ? 'rounded-full' : 'rounded']) />
                     @endif
                     <span class="flex min-w-0 flex-1 flex-col gap-[3px]">
@@ -111,3 +124,4 @@
         </div>
     </div>
 </aside>
+
