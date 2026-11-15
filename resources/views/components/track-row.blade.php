@@ -17,7 +17,7 @@
                 <x-lucide-pause class="size-3.5 fill-current" />
             </button>
         @else
-            <span class="text-[15px] text-text-secondary tabular-nums group-hover:hidden">{{ $index }}</span>
+            <span data-track-number class="text-[15px] text-text-secondary tabular-nums group-hover:hidden">{{ $index }}</span>
             <button type="button" aria-label="Play {{ $song->title }}" class="hidden text-white group-hover:block">
                 <x-lucide-play class="size-3.5 fill-current" />
             </button>
@@ -36,7 +36,10 @@
 
     <span class="hidden truncate text-sm text-text-secondary tabular-nums xl:block">{{ $meta ?? \App\Support\Format::plays($song->plays) }}</span>
 
-    <button type="button" aria-label="{{ $liked ? 'Remove from' : 'Save to' }} Liked Songs" aria-pressed="{{ $liked ? 'true' : 'false' }}"
+    <button type="button" data-song-like data-song-id="{{ $song->id }}" data-song-title="{{ $song->title }}"
+        data-song-liked="{{ $liked ? 'true' : 'false' }}"
+        aria-label="{{ $liked ? 'Remove' : 'Save' }} {{ $song->title }} {{ $liked ? 'from' : 'to' }} Liked Songs"
+        aria-pressed="{{ $liked ? 'true' : 'false' }}"
         @class([
             'flex size-8 items-center justify-center transition hover:scale-105',
             $liked ? 'text-accent' : 'text-text-secondary opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-white',

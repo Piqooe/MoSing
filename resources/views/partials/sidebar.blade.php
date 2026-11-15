@@ -5,8 +5,12 @@
     ];
     $libraryFilters = ['Playlists', 'Artists', 'Albums'];
     $currentPlaylist = request()->routeIs('playlists.show') ? request()->route('slug') : null;
-    $libraryHref = fn ($item) => $item->type === 'playlist' && ($item->slug ?? null) ? route('playlists.show', $item->slug) : '#';
-    $libraryActive = fn ($item) => $item->type === 'playlist' && $currentPlaylist !== null && ($item->slug ?? null) === $currentPlaylist;
+    $libraryHref = fn ($item) => $item->type === 'liked'
+        ? route('liked-songs')
+        : ($item->type === 'playlist' && ($item->slug ?? null) ? route('playlists.show', $item->slug) : '#');
+    $libraryActive = fn ($item) => $item->type === 'liked'
+        ? request()->routeIs('liked-songs')
+        : ($item->type === 'playlist' && $currentPlaylist !== null && ($item->slug ?? null) === $currentPlaylist);
     $libraryEmpty = fn ($item) => empty((array) ($item->artwork ?? [])) && empty($item->cover_url);
 @endphp
 

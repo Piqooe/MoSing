@@ -10,13 +10,36 @@ use App\Models\User;
 use App\Support\DummyMusic;
 use App\Support\Format;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
+    private function resolveUser(): User
+    {
+        $user = Auth::user();
+
+        if ($user) {
+            return $user;
+        }
+
+        if (Schema::hasTable('users')) {
+            $user = User::query()->first();
+
+            if ($user) {
+                return $user;
+            }
+        }
+
+        return new User([
+            'name' => 'Guest User',
+            'avatar_url' => null,
+        ]);
+    }
+
     public function index(): View
     {
-        $user = Auth::user() ?? User::first();
+        $user = $this->resolveUser();
 
         $albums = Album::with('artist')
             ->withCount('songs')
@@ -55,7 +78,17 @@ class HomeController extends Controller
             isset($playlists['indie-pagi']) ? $quick('playlist', $playlists['indie-pagi']) : null,
         ])->filter()->values();
 
-        $newRelease = $albums['electric-bloom'] ?? $albums->first();
+        $newRelease = $albums['electric-bloom'] ?? $albums->first() ?? (object) [
+            'title' => 'No releases yet',
+            'cover_url' => null,
+            'artwork' => ['pattern' => 'orb', 'palette' => 'violet'],
+            'artist' => (object) ['name' => 'MoSing'],
+            'type' => 'Album',
+            'release_year' => now()->year,
+            'songs_count' => 0,
+            'total_duration' => 0,
+            'description' => null,
+        ];
 
         $pick = fn ($collection, array $slugs) => collect($slugs)
             ->map(fn ($slug) => $collection[$slug] ?? null)
@@ -75,6 +108,28 @@ class HomeController extends Controller
             'featuredPlaylists' => $playlists->values(),
             'recommendedArtists' => $pick($artists, ['luna-arden', 'sora-malik', 'nova', 'elio-hart', 'nadia-rae', 'aruna']),
             'recommendedMusic' => $pick($albums, ['electric-bloom', 'quiet-storms', 'lost-in-tokyo', 'velvet-nights', 'wildflower-season', 'after-rain']),
+        ]);
+    }
+
+    public function likedSongs(): View
+    {
+        $songs = DummyMusic::songs()->values()->map(function ($song, $index) {
+            $song->added_at = match ($index) {
+                0 => 'Just now',
+                1 => 'Today',
+                2 => 'Yesterday',
+                3 => '2 days ago',
+                default => now()->subDays($index * 3)->format('M j, Y'),
+            };
+
+            return $song;
+        });
+
+        return view('liked-songs', [
+            'user' => $this->resolveUser(),
+            'songs' => $songs,
+            'likedCount' => $songs->where('is_liked', true)->count(),
+            'totalDuration' => $songs->where('is_liked', true)->sum('duration'),
         ]);
     }
 
