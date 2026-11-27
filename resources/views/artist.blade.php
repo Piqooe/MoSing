@@ -9,9 +9,9 @@
             <span class="text-xs font-semibold tracking-wider text-text-secondary uppercase">Artist</span>
             <h1 class="truncate text-3xl font-bold md:text-5xl">{{ $artist->name }}</h1>
             @auth
-                <form method="POST" action="{{ route('artists.follow', $artist) }}" class="mt-2">
+                <form method="POST" action="{{ route('artists.follow', $artist) }}" class="mt-2" data-library-toggle>
                     @csrf
-                    <button type="submit" aria-pressed="{{ $isFollowing ? 'true' : 'false' }}"
+                    <button type="submit" data-on="Following" data-off="Follow" aria-pressed="{{ $isFollowing ? 'true' : 'false' }}"
                         class="h-9 rounded-full border border-outline px-5 text-sm font-semibold transition hover:scale-105 {{ $isFollowing ? 'bg-accent text-black border-accent' : 'text-white' }}">
                         {{ $isFollowing ? 'Following' : 'Follow' }}
                     </button>

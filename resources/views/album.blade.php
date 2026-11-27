@@ -17,9 +17,9 @@
                 <p class="max-w-2xl text-sm text-text-secondary">{{ $album->description }}</p>
             @endif
             @auth
-                <form method="POST" action="{{ route('albums.save', $album) }}" class="mt-2">
+                <form method="POST" action="{{ route('albums.save', $album) }}" class="mt-2" data-library-toggle>
                     @csrf
-                    <button type="submit" aria-pressed="{{ $isSaved ? 'true' : 'false' }}"
+                    <button type="submit" data-on="Saved" data-off="Save" aria-pressed="{{ $isSaved ? 'true' : 'false' }}"
                         class="h-9 rounded-full border border-outline px-5 text-sm font-semibold transition hover:scale-105 {{ $isSaved ? 'bg-accent text-black border-accent' : 'text-white' }}">
                         {{ $isSaved ? 'Saved' : 'Save' }}
                     </button>

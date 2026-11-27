@@ -40,6 +40,20 @@ class LibraryTest extends TestCase
         $this->assertDatabaseMissing('artist_user', ['user_id' => $user->id, 'artist_id' => $artist->id]);
     }
 
+    public function test_follow_toggle_returns_json_state_for_ajax_requests(): void
+    {
+        $user = User::factory()->create();
+        $artist = $this->artist();
+
+        $this->actingAs($user)->postJson(route('artists.follow', $artist))
+            ->assertOk()
+            ->assertJson(['following' => true]);
+
+        $this->actingAs($user)->postJson(route('artists.follow', $artist))
+            ->assertOk()
+            ->assertJson(['following' => false]);
+    }
+
     public function test_user_can_save_and_unsave_an_album(): void
     {
         $user = User::factory()->create();

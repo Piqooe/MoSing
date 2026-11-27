@@ -48,5 +48,6 @@
 
     @include('partials.sidebar-scroll')
     @include('partials.library-filter')
+    @include('partials.library-toggle')
 </body>
 </html>
