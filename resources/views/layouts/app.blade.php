@@ -26,8 +26,12 @@
             </main>
         </div>
 
-        @include('partials.mini-player')
-        @include('partials.player')
+        {{-- Nonaktifkan sementara player statis bawaan agar tidak dobel --}}
+        {{-- @include('partials.mini-player') --}}
+        {{-- @include('partials.player') --}}
+
+        <x-now-playing-bar />
+
         @include('partials.bottom-nav')
     </div>
 
