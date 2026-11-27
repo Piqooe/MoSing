@@ -55,7 +55,7 @@ class SearchController extends Controller
         $categories = \App\Models\Category::all();
 
         $trendingSongs = \App\Models\Song::with(['artist', 'album'])
-            ->orderByDesc('plays_count')
+            ->orderByDesc('plays')
             ->take(8)
             ->get();
 
