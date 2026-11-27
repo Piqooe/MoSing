@@ -276,7 +276,7 @@
 
             const toItem = {
                 song: (s) => ({
-                    key: `song-${s.id}`, type: 'song', title: s.title, subtitle: s.artist?.name ?? '',
+                    key: `song-${s.id}`, id: s.id, type: 'song', title: s.title, subtitle: s.artist?.name ?? '',
                     src: s.album?.cover_url, art: s.album?.artwork ?? s.artist?.artwork, seed: s.album?.title ?? s.title,
                     duration: s.duration,
                 }),
@@ -363,7 +363,8 @@
                             <a href="#" data-item="${esc(item.key)}" class="truncate text-[15px] leading-[18px] text-white outline-none after:absolute after:inset-0 after:rounded-md focus-visible:after:outline-2 focus-visible:after:outline-accent">${esc(item.title)}</a>
                             <span class="truncate text-[13px] leading-4 text-text-secondary group-hover:text-white">${esc(item.subtitle)}</span>
                         </div>
-                        <button type="button" aria-label="Save ${esc(item.title)} to Liked Songs"
+                        <button type="button" data-song-like data-song-id="${esc(item.id)}" data-song-title="${esc(item.title)}" data-song-liked="false"
+                            aria-label="Save ${esc(item.title)} to Liked Songs" aria-pressed="false"
                             class="relative z-10 flex size-8 items-center justify-center text-text-secondary opacity-0 transition hover:scale-105 hover:text-white group-hover:opacity-100 focus-visible:opacity-100">${icon('heart')}</button>
                         <span class="w-10 text-right text-sm text-text-secondary tabular-nums">${duration(item.duration)}</span>
                     </div>`;
@@ -485,6 +486,7 @@
                 }
 
                 results.innerHTML = parts.join('');
+                window.MoSingLikes?.initialize(results);
                 if (showGenres) results.append(genresSection(genres, { limit: f === 'genres' ? Infinity : 4 }));
                 status.textContent = `${total} results for ${q}`;
             };
