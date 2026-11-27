@@ -3,8 +3,18 @@
         const tokenOf = (form) => form.querySelector('input[name="_token"]')?.value ?? '';
 
         const setButton = (button, on) => {
-            button.textContent = on ? button.dataset.on : button.dataset.off;
             button.setAttribute('aria-pressed', on ? 'true' : 'false');
+
+            if (button.dataset.variant === 'icon') {
+                button.classList.toggle('text-accent', on);
+                button.classList.toggle('text-text-secondary', !on);
+                button.classList.toggle('hover:text-white', !on);
+                button.querySelector('svg')?.classList.toggle('fill-current', on);
+                if (button.dataset.labelOn) button.setAttribute('aria-label', on ? button.dataset.labelOn : button.dataset.labelOff);
+                return;
+            }
+
+            button.textContent = on ? button.dataset.on : button.dataset.off;
             button.classList.toggle('bg-accent', on);
             button.classList.toggle('text-black', on);
             button.classList.toggle('border-accent', on);

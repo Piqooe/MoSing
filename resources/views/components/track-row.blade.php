@@ -1,7 +1,9 @@
-@props(['song', 'index' => 1, 'playing' => false, 'meta' => null, 'removeAction' => null])
+@props(['song', 'index' => 1, 'playing' => false, 'meta' => null, 'removeAction' => null, 'showAlbum' => true])
 
 @php
-    $grid = 'grid-cols-[minmax(0,1fr)_32px_18px] md:grid-cols-[32px_minmax(0,1fr)_minmax(0,180px)_32px_56px_18px] xl:grid-cols-[32px_minmax(0,1fr)_240px_140px_32px_56px_18px]';
+    $grid = $showAlbum
+        ? 'grid-cols-[minmax(0,1fr)_32px_18px] md:grid-cols-[32px_minmax(0,1fr)_minmax(0,180px)_32px_56px_18px] xl:grid-cols-[32px_minmax(0,1fr)_240px_140px_32px_56px_18px]'
+        : 'grid-cols-[minmax(0,1fr)_32px_18px] md:grid-cols-[32px_minmax(0,1fr)_140px_32px_56px_18px]';
     $liked = (bool) ($song->is_liked ?? false);
 @endphp
 
@@ -32,9 +34,11 @@
         </div>
     </div>
 
-    <a href="#" class="hidden truncate text-sm text-text-secondary group-hover:text-white hover:underline md:block">{{ $song->album->title }}</a>
+    @if ($showAlbum)
+        <a href="#" class="hidden truncate text-sm text-text-secondary group-hover:text-white hover:underline md:block">{{ $song->album->title }}</a>
+    @endif
 
-    <span class="hidden truncate text-sm text-text-secondary tabular-nums xl:block">{{ $meta ?? \App\Support\Format::plays($song->plays) }}</span>
+    <span @class(['hidden truncate text-sm text-text-secondary tabular-nums', $showAlbum ? 'xl:block' : 'md:block'])>{{ $meta ?? \App\Support\Format::plays($song->plays) }}</span>
 
     <button type="button" data-song-like data-song-id="{{ $song->id }}" data-song-title="{{ $song->title }}"
         data-song-liked="{{ $liked ? 'true' : 'false' }}"
