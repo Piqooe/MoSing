@@ -4,12 +4,35 @@
         ['label' => 'Search', 'icon' => 'search', 'href' => '#', 'active' => false],
     ];
     $libraryFilters = ['Playlists', 'Artists', 'Albums'];
+
+    // Ambil playlist asli milik user yang sedang login (jika ada)
+    $myPlaylists = auth()->check()
+        ? \App\Models\Playlist::where('user_id', auth()->id())->latest()->get()
+        : collect();
+
+    // Helper kecil untuk menentukan URL tujuan item library
+    $resolveLibraryHref = function ($item) {
+        $slug = $item->slug ?? null;
+        if (! $slug) return '#';
+
+        return match ($item->type ?? '') {
+            'playlist' => route('playlists.show', $slug),
+            'album'    => route('albums.show', $slug),
+            'artist'   => route('artists.show', $slug),
+            default    => '#',
+        };
+    };
+
+    $createAction = auth()->check()
+        ? 'openCreatePlaylistModal()'
+        : "window.location.href='" . (\Illuminate\Support\Facades\Route::has('login') ? route('login') : url('/login')) . "'";
 @endphp
 
 <aside class="hidden w-[72px] shrink-0 flex-col overflow-hidden rounded-lg bg-sidebar md:flex lg:w-72" aria-label="Sidebar">
 
+    {{-- SIDEBAR COMPACT (TABLET / MD) --}}
     <div class="flex h-full flex-col items-center gap-2.5 overflow-y-auto px-3 py-5 scrollbar-none lg:hidden">
-        <a href="{{ route('home') }}" class="mb-3 flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent" aria-label="MoSing">
+        <a href="{{ route('home') }}" class="mb-3 flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent" aria-label="Vibely">
             <x-lucide-audio-waveform class="size-5 text-black" />
         </a>
 
@@ -30,8 +53,17 @@
 
         <div class="h-px w-12 shrink-0 bg-border"></div>
 
+        {{-- Playlist milik user yang login --}}
+        @foreach ($myPlaylists as $pl)
+            <a href="{{ route('playlists.show', $pl) }}" title="{{ $pl->title }}" aria-label="{{ $pl->title }}" class="shrink-0 transition-opacity hover:opacity-80">
+                <x-cover :src="$pl->cover_url" :art="$pl->artwork" :seed="$pl->title" class="size-12 rounded" />
+            </a>
+        @endforeach
+
+        {{-- Item library bawaan --}}
         @foreach ($library as $item)
-            <a href="#" title="{{ $item->title }}" aria-label="{{ $item->title }}" class="shrink-0 transition-opacity hover:opacity-80">
+            @continue(($item->type ?? '') === 'playlist' && $myPlaylists->contains('slug', $item->slug ?? ''))
+            <a href="{{ $resolveLibraryHref($item) }}" title="{{ $item->title }}" aria-label="{{ $item->title }}" class="shrink-0 transition-opacity hover:opacity-80">
                 @if ($item->type === 'liked')
                     <x-liked-tile class="size-12 rounded" />
                 @else
@@ -42,12 +74,13 @@
         @endforeach
     </div>
 
+    {{-- SIDEBAR PENUH (DESKTOP / LG) --}}
     <div class="hidden h-full flex-col gap-0.5 px-3 pt-5 pb-4 lg:flex">
         <a href="{{ route('home') }}" class="flex items-center gap-2.5 px-3 pt-1 pb-5">
             <span class="flex size-[33px] items-center justify-center rounded-lg bg-accent">
                 <x-lucide-audio-waveform class="size-5 text-black" />
             </span>
-            <span class="text-[22px] font-bold tracking-[-0.4px]">MoSing</span>
+            <span class="text-[22px] font-bold tracking-[-0.4px]">Vibely</span>
         </a>
 
         <nav class="flex flex-col gap-0.5" aria-label="Main">
@@ -66,13 +99,14 @@
 
         <div class="my-2 h-px shrink-0 bg-border"></div>
 
+        {{-- TITIK 1: Tombol "+" di sebelah Your Library --}}
         <div class="flex h-[42px] items-center justify-between px-3">
             <a href="#" class="flex items-center gap-4 text-[15px] font-semibold text-text-secondary transition-colors hover:text-white">
                 <x-lucide-library class="size-[22px]" />
                 Your Library
             </a>
-            <button type="button" aria-label="Create playlist or folder"
-                class="flex size-[30px] items-center justify-center rounded-full bg-card text-text-secondary transition-colors hover:bg-card-hover hover:text-white">
+            <button type="button" onclick="{{ $createAction }}" aria-label="Create playlist or folder"
+                class="flex size-[30px] items-center justify-center rounded-full bg-card text-text-secondary transition-colors hover:bg-card-hover hover:text-white cursor-pointer">
                 <x-lucide-plus class="size-4" />
             </button>
         </div>
@@ -84,15 +118,35 @@
         </div>
 
         <div class="-mx-1 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-1">
-            <button type="button" class="flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-card">
+            {{-- TITIK 2: Tombol "Create Playlist" --}}
+            <button type="button" onclick="{{ $createAction }}" class="flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-card cursor-pointer">
                 <span class="flex size-12 items-center justify-center rounded border border-border bg-card">
                     <x-lucide-plus class="size-[22px]" />
                 </span>
                 <span class="text-sm font-semibold">Create Playlist</span>
             </button>
 
+            {{-- TITIK 3A: Daftar Playlist Asli Milik User dari Database --}}
+            @foreach ($myPlaylists as $pl)
+                @php
+                    $isCurrentPlaylist = request()->routeIs('playlists.show') && request()->route('playlist')?->id === $pl->id;
+                @endphp
+                <a href="{{ route('playlists.show', $pl) }}" @class([
+                    'flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-card',
+                    'bg-card' => $isCurrentPlaylist,
+                ])>
+                    <x-cover :src="$pl->cover_url" :art="$pl->artwork" :seed="$pl->title" class="size-12 rounded" />
+                    <span class="flex min-w-0 flex-1 flex-col gap-[3px]">
+                        <span @class(['truncate text-sm font-semibold', $isCurrentPlaylist ? 'text-accent' : 'text-white'])>{{ $pl->title }}</span>
+                        <span class="truncate text-xs text-text-secondary">Playlist • {{ $pl->owner_name ?? auth()->user()->name }}</span>
+                    </span>
+                </a>
+            @endforeach
+
+            {{-- TITIK 3B: Item Library Bawaan (Sudah Terhubung ke Route Detail) --}}
             @foreach ($library as $item)
-                <a href="#" class="flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-card">
+                @continue(($item->type ?? '') === 'playlist' && $myPlaylists->contains('slug', $item->slug ?? ''))
+                <a href="{{ $resolveLibraryHref($item) }}" class="flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-card">
                     @if ($item->type === 'liked')
                         <x-liked-tile class="size-12 rounded" />
                     @else

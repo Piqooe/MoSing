@@ -1,11 +1,17 @@
 <?php
 
+use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PlaylistController;
+use App\Http\Controllers\PlaylistController;php artisan storage:link
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/ui-kit', [HomeController::class, 'uiKit'])->name('ui-kit');
+
+// Halaman Detail Album & Artis
+Route::get('/albums/{album:slug}', [AlbumController::class, 'show'])->name('albums.show');
+Route::get('/artists/{artist:slug}', [ArtistController::class, 'show'])->name('artists.show');
 
 // Halaman Detail Playlist (bisa diakses publik jika is_public = true)
 Route::get('/playlists/{playlist:slug}', [PlaylistController::class, 'show'])
