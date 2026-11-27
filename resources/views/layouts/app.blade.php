@@ -46,6 +46,8 @@
         </button>
     </div>
 
+    <x-create-playlist-modal />
+
     @include('partials.sidebar-scroll')
     @include('partials.library-filter')
     @include('partials.library-toggle')
