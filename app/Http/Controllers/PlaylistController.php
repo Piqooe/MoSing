@@ -48,8 +48,19 @@ class PlaylistController extends Controller
                 ->get();
         }
 
-        return view('playlists.show', [
+        $songs = $playlist->songs;
+        $totalDuration = $songs->sum('duration');
+        $recommended = Song::with(['artist', 'album'])
+            ->whereNotIn('id', $existingSongIds)
+            ->inRandomOrder()
+            ->take($songs->isEmpty() ? 4 : 3)
+            ->get();
+
+        return view('playlist', [
             'playlist'       => $playlist,
+            'songs'          => $songs,
+            'totalDuration'  => $totalDuration,
+            'recommended'    => $recommended,
             'isOwner'        => $isOwner,
             'availableSongs' => $availableSongs,
             'search'         => $search,

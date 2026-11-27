@@ -69,7 +69,7 @@
             <div class="flex flex-col">
                 @foreach ($songs as $song)
                     <x-track-row :song="$song" :index="$song->pivot->position ?? $loop->iteration"
-                        :playing="$song->id === $nowPlaying->id"
+                        :playing="$song->id === $nowPlaying?->id"
                         :meta="Format::dateAdded($song->pivot->created_at ?? null)" />
                 @endforeach
             </div>
