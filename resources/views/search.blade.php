@@ -3,21 +3,6 @@
 @section('title', 'Search')
 
 @php
-    $genres = [
-        ['name' => 'Pop', 'color' => '#E11D48', 'palette' => 'red', 'pattern' => 'bands'],
-        ['name' => 'Indie', 'color' => '#7C3AED', 'palette' => 'amber', 'pattern' => 'rings'],
-        ['name' => 'Hip-Hop', 'color' => '#EA580C', 'palette' => 'violet', 'pattern' => 'horizon'],
-        ['name' => 'Lo-fi', 'color' => '#0D9488', 'palette' => 'green', 'pattern' => 'orb'],
-        ['name' => 'Jazz', 'color' => '#1D4ED8', 'palette' => 'pink', 'pattern' => 'bands'],
-        ['name' => 'Rock', 'color' => '#B91C1C', 'palette' => 'teal', 'pattern' => 'rings'],
-        ['name' => 'Electronic', 'color' => '#0891B2', 'palette' => 'rose', 'pattern' => 'horizon'],
-        ['name' => 'R&B', 'color' => '#A21CAF', 'palette' => 'lime', 'pattern' => 'orb'],
-        ['name' => 'Dangdut', 'color' => '#CA8A04', 'palette' => 'orange', 'pattern' => 'bands'],
-        ['name' => 'K-Pop', 'color' => '#DB2777', 'palette' => 'indigo', 'pattern' => 'rings'],
-        ['name' => 'Acoustic', 'color' => '#15803D', 'palette' => 'fuchsia', 'pattern' => 'horizon'],
-        ['name' => 'Classical', 'color' => '#475569', 'palette' => 'blue', 'pattern' => 'orb'],
-    ];
-
     $filters = ['all' => 'All', 'songs' => 'Songs', 'artists' => 'Artists', 'albums' => 'Albums', 'playlists' => 'Playlists', 'genres' => 'Genres'];
     $heading = 'text-[17px] font-bold tracking-[-0.3px] md:text-[22px]';
 @endphp
