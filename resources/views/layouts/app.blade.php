@@ -47,5 +47,6 @@
     </div>
 
     @include('partials.sidebar-scroll')
+    @include('partials.library-filter')
 </body>
 </html>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\SearchPageController;
 use Illuminate\Support\Facades\Route;
@@ -36,4 +37,10 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/playlists/{playlist:slug}/songs/{song}', [PlaylistController::class, 'removeSong'])
         ->name('playlists.songs.destroy');
+
+    Route::post('/artists/{artist:slug}/follow', [LibraryController::class, 'toggleArtist'])
+        ->name('artists.follow');
+
+    Route::post('/albums/{album:slug}/save', [LibraryController::class, 'toggleAlbum'])
+        ->name('albums.save');
 });

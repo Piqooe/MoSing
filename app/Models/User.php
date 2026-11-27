@@ -40,4 +40,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Song::class, 'liked_songs')
             ->withTimestamps();
     }
+
+    public function followedArtists(): BelongsToMany
+    {
+        return $this->belongsToMany(Artist::class, 'artist_user')
+            ->withTimestamps();
+    }
+
+    public function savedAlbums(): BelongsToMany
+    {
+        return $this->belongsToMany(Album::class, 'album_user')
+            ->withTimestamps();
+    }
 }

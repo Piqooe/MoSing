@@ -2,7 +2,6 @@
 
 namespace App\View\Composers;
 
-use App\Models\Playlist;
 use App\Models\Song;
 use App\Models\User;
 use Illuminate\Support\Collection;
@@ -35,38 +34,45 @@ class AppLayoutComposer
 
     private function library(): Collection
     {
+        $user = auth()->user();
+
         $liked = (object) [
             'type' => 'liked',
             'slug' => null,
             'title' => 'Liked Songs',
-            'subtitle' => 'Playlist • '.$this->likedCount().' songs',
+            'subtitle' => 'Playlist • '.($user ? $user->likedSongs()->count() : 0).' songs',
             'cover_url' => null,
             'artwork' => null,
             'is_playing' => false,
         ];
 
-        $playlists = Playlist::with('user')
-            ->where('is_public', true)
-            ->orderBy('id')
-            ->get()
-            ->map(fn (Playlist $playlist) => (object) [
-                'type' => 'playlist',
-                'slug' => $playlist->slug,
-                'title' => $playlist->title,
-                'subtitle' => 'Playlist • '.$playlist->owner->name,
-                'cover_url' => $playlist->cover_url,
-                'artwork' => (array) $playlist->artwork,
+        if (! $user) {
+            return collect([$liked]);
+        }
+
+        $artists = $user->followedArtists()->orderBy('name')->get()
+            ->map(fn ($artist) => (object) [
+                'type' => 'artist',
+                'slug' => $artist->slug,
+                'title' => $artist->name,
+                'subtitle' => 'Artist',
+                'cover_url' => $artist->photo_url,
+                'artwork' => (array) $artist->artwork,
                 'is_playing' => false,
             ]);
 
-        return collect([$liked])->concat($playlists)->values();
-    }
+        $albums = $user->savedAlbums()->with('artist')->orderBy('title')->get()
+            ->map(fn ($album) => (object) [
+                'type' => 'album',
+                'slug' => $album->slug,
+                'title' => $album->title,
+                'subtitle' => 'Album • '.$album->artist->name,
+                'cover_url' => $album->cover_url,
+                'artwork' => (array) $album->artwork,
+                'is_playing' => false,
+            ]);
 
-    private function likedCount(): int
-    {
-        $user = auth()->user();
-
-        return $user ? $user->likedSongs()->count() : 0;
+        return collect([$liked])->concat($artists)->concat($albums)->values();
     }
 
     private function nowPlaying(object $user): ?Song

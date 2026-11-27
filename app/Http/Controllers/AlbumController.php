@@ -11,9 +11,13 @@ class AlbumController extends Controller
     {
         $album->load(['artist', 'songs.artist']);
 
+        $isSaved = auth()->check()
+            && auth()->user()->savedAlbums()->whereKey($album->id)->exists();
+
         return view('album', [
             'album' => $album,
             'songs' => $album->songs,
+            'isSaved' => $isSaved,
         ]);
     }
 }

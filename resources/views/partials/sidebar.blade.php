@@ -114,13 +114,13 @@
 
         <div class="flex gap-2 px-2 pt-1 pb-2">
             @foreach ($libraryFilters as $filter)
-                <x-chip :active="$loop->first">{{ $filter }}</x-chip>
+                <x-chip :active="$loop->first" data-lib-filter="{{ strtolower($filter) }}">{{ $filter }}</x-chip>
             @endforeach
         </div>
 
         <div data-sidebar-scroll="library" class="-mx-1 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-1">
             {{-- TITIK 2: Tombol "Create Playlist" --}}
-            <button type="button" onclick="{{ $createAction }}" class="flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-card cursor-pointer">
+            <button type="button" data-lib-type="playlist" onclick="{{ $createAction }}" class="flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-card cursor-pointer">
                 <span class="flex size-12 items-center justify-center rounded border border-border bg-card">
                     <x-lucide-plus class="size-[22px]" />
                 </span>
@@ -132,7 +132,7 @@
                 @php
                     $isCurrentPlaylist = request()->routeIs('playlists.show') && request()->route('playlist')?->id === $pl->id;
                 @endphp
-                <a href="{{ route('playlists.show', $pl) }}" @class([
+                <a href="{{ route('playlists.show', $pl) }}" data-lib-type="playlist" @class([
                     'flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-card',
                     'bg-card' => $isCurrentPlaylist,
                 ])>
@@ -147,7 +147,7 @@
             {{-- TITIK 3B: Item Library Bawaan (Sudah Terhubung ke Route Detail) --}}
             @foreach ($library as $item)
                 @continue(($item->type ?? '') === 'playlist' && $myPlaylists->contains('slug', $item->slug ?? ''))
-                <a href="{{ $resolveLibraryHref($item) }}" class="flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-card">
+                <a href="{{ $resolveLibraryHref($item) }}" data-lib-type="{{ $item->type === 'liked' ? 'playlist' : $item->type }}" class="flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-card">
                     @if ($item->type === 'liked')
                         <x-liked-tile class="size-12 rounded" />
                     @else
