@@ -259,6 +259,12 @@
                     </div>`;
             };
 
+            const pageUrl = {
+                artist: @json(url('/artists')),
+                album: @json(url('/albums')),
+                playlist: @json(url('/playlists')),
+            };
+
             const toItem = {
                 song: (s) => ({
                     key: `song-${s.id}`, id: s.id, type: 'song', title: s.title, subtitle: s.artist?.name ?? '',
@@ -266,16 +272,16 @@
                     duration: s.duration,
                 }),
                 artist: (a) => ({
-                    key: `artist-${a.id}`, type: 'artist', title: a.name, subtitle: 'Artist',
+                    key: `artist-${a.id}`, type: 'artist', title: a.name, subtitle: 'Artist', href: `${pageUrl.artist}/${a.slug}`,
                     src: a.photo_url, art: a.artwork, seed: a.name,
                 }),
                 album: (a) => ({
-                    key: `album-${a.id}`, type: 'album', title: a.title,
+                    key: `album-${a.id}`, type: 'album', title: a.title, href: `${pageUrl.album}/${a.slug}`,
                     subtitle: [a.release_year, a.artist?.name].filter(Boolean).join(' • '),
                     src: a.cover_url, art: a.artwork, seed: a.title,
                 }),
                 playlist: (p) => ({
-                    key: `playlist-${p.id}`, type: 'playlist', title: p.title,
+                    key: `playlist-${p.id}`, type: 'playlist', title: p.title, href: `${pageUrl.playlist}/${p.slug}`,
                     subtitle: `Playlist • ${p.songs_count ?? 0} songs`,
                     src: p.cover_url, art: p.artwork, seed: p.title,
                 }),
@@ -332,7 +338,7 @@
                         : `<button type="button" aria-label="Play ${esc(item.title)}"
                                         class="shadow-play absolute right-2 bottom-2 z-20 hidden size-11 translate-y-2 items-center justify-center rounded-full bg-accent pl-[3px] text-black opacity-0 transition duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 focus-visible:translate-y-0 focus-visible:opacity-100 md:inline-flex">${icon('play')}</button>`}
                         </div>
-                        <a href="#" data-item="${esc(item.key)}" ${recent ? `data-recent-open="${esc(item.title)}"` : ''}
+                        <a href="${esc(item.href ?? '#')}" data-item="${esc(item.key)}" ${recent ? `data-recent-open="${esc(item.title)}"` : ''}
                             class="truncate text-[13px] font-semibold text-white outline-none after:absolute after:inset-0 after:z-10 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:outline-accent md:text-[15px] ${circle ? 'text-center' : ''}">${esc(item.title)}</a>
                         <p class="line-clamp-2 text-xs leading-[15px] text-text-secondary md:text-[13px] md:leading-[18px] ${circle ? 'text-center' : ''}">${esc(subtitle)}</p>
                     </article>`;
@@ -345,7 +351,7 @@
                             <span class="absolute inset-0 hidden items-center justify-center rounded bg-black/60 group-hover:flex" aria-hidden="true">${icon('play-sm')}</span>
                         </div>
                         <div class="flex min-w-0 flex-col gap-1">
-                            <a href="#" data-item="${esc(item.key)}" class="truncate text-[15px] leading-[18px] text-white outline-none after:absolute after:inset-0 after:rounded-md focus-visible:after:outline-2 focus-visible:after:outline-accent">${esc(item.title)}</a>
+                            <a href="${esc(item.href ?? '#')}" data-item="${esc(item.key)}" class="truncate text-[15px] leading-[18px] text-white outline-none after:absolute after:inset-0 after:rounded-md focus-visible:after:outline-2 focus-visible:after:outline-accent">${esc(item.title)}</a>
                             <span class="truncate text-[13px] leading-4 text-text-secondary group-hover:text-white">${esc(item.subtitle)}</span>
                         </div>
                         <button type="button" data-song-like data-song-id="${esc(item.id)}" data-song-title="${esc(item.title)}" data-song-liked="false"
@@ -359,7 +365,7 @@
                         ${heading('Top result')}
                         <article class="group relative flex flex-col rounded-lg bg-card p-5 transition-colors duration-200 hover:bg-card-hover xl:h-[236px] xl:bg-card-hover xl:hover:bg-[#363636]">
                             ${coverFor(item, 'size-24 shadow-[0_8px_24px_rgb(0_0_0/0.5)]')}
-                            <a href="#" data-item="${esc(item.key)}"
+                            <a href="${esc(item.href ?? '#')}" data-item="${esc(item.key)}"
                                 class="mt-5 truncate pr-16 text-[28px] leading-tight font-bold tracking-[-0.8px] text-white outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:outline-accent md:text-[32px]">${esc(item.title)}</a>
                             <div class="mt-2 flex min-w-0 items-center gap-2 pr-16 text-sm text-text-secondary">
                                 <span class="rounded-full bg-black/70 px-2.5 py-1 text-[13px] font-semibold text-white">${typeLabel[item.type]}</span>
@@ -596,6 +602,7 @@
                 if (item) {
                     e.preventDefault();
                     addRecent(item);
+                    if (item.href) window.location.href = item.href;
                 }
             });
 
