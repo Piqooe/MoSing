@@ -114,7 +114,7 @@
 
         <div class="flex gap-2 px-2 pt-1 pb-2">
             @foreach ($libraryFilters as $filter)
-                <x-chip :active="$loop->first" data-lib-filter="{{ strtolower($filter) }}">{{ $filter }}</x-chip>
+                <x-chip :active="$loop->first" data-lib-filter="{{ \Illuminate\Support\Str::singular(strtolower($filter)) }}">{{ $filter }}</x-chip>
             @endforeach
         </div>
 
