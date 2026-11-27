@@ -79,7 +79,7 @@
         </section>
 
         <section class="flex flex-col gap-3 md:gap-4">
-            <x-section-header title="Popular Songs" eyebrow="This week on Vibely" href="#" link-text="See more" />
+            <x-section-header title="Popular Songs" eyebrow="This week on MoSing" href="#" link-text="See more" />
             <div class="-mx-2 flex flex-col md:mx-0">
                 @foreach ($popularSongs as $song)
                     <x-track-row :song="$song" :index="$loop->iteration" :playing="$song->id === $nowPlaying->id" />

@@ -33,7 +33,7 @@
 
     {{-- SIDEBAR COMPACT (TABLET / MD) --}}
     <div data-sidebar-scroll="compact" class="flex h-full flex-col items-center gap-2.5 overflow-y-auto px-3 py-5 scrollbar-none lg:hidden">
-        <a href="{{ route('home') }}" class="mb-3 flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent" aria-label="Vibely">
+        <a href="{{ route('home') }}" class="mb-3 flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent" aria-label="MoSing">
             <x-lucide-audio-waveform class="size-5 text-black" />
         </a>
 
@@ -81,7 +81,7 @@
             <span class="flex size-[33px] items-center justify-center rounded-lg bg-accent">
                 <x-lucide-audio-waveform class="size-5 text-black" />
             </span>
-            <span class="text-[22px] font-bold tracking-[-0.4px]">Vibely</span>
+            <span class="text-[22px] font-bold tracking-[-0.4px]">MoSing</span>
         </a>
 
         <nav class="flex flex-col gap-0.5" aria-label="Main">

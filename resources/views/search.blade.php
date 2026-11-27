@@ -180,7 +180,7 @@
             const paletteNames = Object.keys(palettes);
 
             const DEBOUNCE_MS = 300;
-            const RECENT_KEY = 'vibely:recent-searches';
+            const RECENT_KEY = 'mosing:recent-searches';
             const RECENT_MAX = 12;
 
             const state = { query: null, data: null, filter: 'all', items: new Map() };
@@ -211,7 +211,7 @@
             };
 
             const resolveArt = (art, seed) => {
-                const hash = crc32(seed || 'vibely');
+                const hash = crc32(seed || 'mosing');
                 const pattern = art?.pattern ?? patterns[hash % patterns.length];
                 const name = art?.palette ?? paletteNames[Math.floor(hash / 7) % paletteNames.length];
                 const [dark, accent] = palettes[name] ?? palettes.blue;

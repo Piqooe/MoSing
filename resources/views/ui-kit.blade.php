@@ -8,7 +8,7 @@
     <div class="flex flex-col gap-10 px-4 pt-2 pb-10 md:px-6">
         <div>
             <h1 class="text-[32px] font-bold tracking-[-0.6px]">Components</h1>
-            <p class="mt-1 text-sm text-text-secondary">Komponen Blade reusable Vibely. Arahkan kursor ke kartu/baris untuk melihat state hover.</p>
+            <p class="mt-1 text-sm text-text-secondary">Komponen Blade reusable MoSing. Arahkan kursor ke kartu/baris untuk melihat state hover.</p>
         </div>
 
         <section>

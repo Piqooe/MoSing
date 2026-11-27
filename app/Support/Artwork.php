@@ -24,7 +24,7 @@ class Artwork
     public static function resolve(array|object|null $art, string $seed = ''): array
     {
         $art = (array) ($art ?? []);
-        $hash = crc32($seed ?: 'vibely');
+        $hash = crc32($seed ?: 'mosing');
         $names = array_keys(self::PALETTES);
 
         $pattern = $art['pattern'] ?? self::PATTERNS[$hash % count(self::PATTERNS)];
