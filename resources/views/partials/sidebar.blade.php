@@ -1,7 +1,7 @@
 @php
     $nav = [
         ['label' => 'Home', 'icon' => 'house', 'href' => route('home'), 'active' => request()->routeIs('home')],
-        ['label' => 'Search', 'icon' => 'search', 'href' => '#', 'active' => false],
+        ['label' => 'Search', 'icon' => 'search', 'href' => route('search'), 'active' => request()->routeIs('search')],
     ];
     $libraryFilters = ['Playlists', 'Artists', 'Albums'];
 
@@ -67,7 +67,7 @@
                 @if ($item->type === 'liked')
                     <x-liked-tile class="size-12 rounded" />
                 @else
-                    <x-cover :src="$item->cover_url" :art="$item->artwork" :seed="$item->title" :artist="$item->type === 'artist'"
+                    <x-cover :src="$item->cover_url" :art="$item->artwork" :seed="$item->title" :artist="$item->type === 'artist'" :empty="$libraryEmpty($item)"
                         @class(['size-12', $item->type === 'artist' ? 'rounded-full' : 'rounded']) />
                 @endif
             </a>
@@ -150,7 +150,7 @@
                     @if ($item->type === 'liked')
                         <x-liked-tile class="size-12 rounded" />
                     @else
-                        <x-cover :src="$item->cover_url" :art="$item->artwork" :seed="$item->title" :artist="$item->type === 'artist'"
+                        <x-cover :src="$item->cover_url" :art="$item->artwork" :seed="$item->title" :artist="$item->type === 'artist'" :empty="$libraryEmpty($item)"
                             @class(['size-12', $item->type === 'artist' ? 'rounded-full' : 'rounded']) />
                     @endif
                     <span class="flex min-w-0 flex-1 flex-col gap-[3px]">

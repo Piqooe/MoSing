@@ -16,6 +16,37 @@ class Format
         return (int) round(($seconds ?? 0) / 60).' min';
     }
 
+    public static function totalDuration(?int $seconds, bool $short = false): string
+    {
+        $seconds = max(0, (int) $seconds);
+        $h = intdiv($seconds, 3600);
+        $m = intdiv($seconds % 3600, 60);
+        $s = $seconds % 60;
+
+        if ($short) {
+            return $h ? "{$h}h {$m}min" : "{$m}min";
+        }
+
+        return $h ? "about {$h} hr {$m} min" : "{$m} min {$s} sec";
+    }
+
+    public static function dateAdded(?string $date): string
+    {
+        if (! $date) {
+            return '';
+        }
+
+        $at = \Illuminate\Support\Carbon::parse($date);
+        $days = (int) $at->copy()->startOfDay()->diffInDays(now()->startOfDay());
+
+        return match (true) {
+            $days <= 0 => 'Today',
+            $days === 1 => 'Yesterday',
+            $days < 7 => "{$days} days ago",
+            default => $at->format('M j, Y'),
+        };
+    }
+
     public static function plays(?int $plays): string
     {
         return number_format((int) $plays);

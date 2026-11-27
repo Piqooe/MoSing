@@ -35,6 +35,6 @@
         @include('partials.bottom-nav')
     </div>
 
-    <x-create-playlist-modal />
+    @include('partials.sidebar-scroll')
 </body>
 </html>

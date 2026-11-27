@@ -3,7 +3,7 @@
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PlaylistController;php artisan storage:link
+use App\Http\Controllers\PlaylistController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');

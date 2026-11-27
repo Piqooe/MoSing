@@ -6,6 +6,7 @@
     'labelSize' => 'text-[10px]',
     'artist' => false,
     'alt' => '',
+    'empty' => false,
 ])
 
 @php
@@ -19,6 +20,10 @@
 <div {{ $attributes->class(['relative shrink-0 overflow-hidden bg-card']) }}>
     @if ($src)
         <img src="{{ $src }}" alt="{{ $alt ?: $seed }}" loading="lazy" class="absolute inset-0 size-full object-cover">
+    @elseif ($empty)
+        <div class="absolute inset-0 flex items-center justify-center bg-card" aria-hidden="true">
+            <x-lucide-music class="size-[31%] text-muted" />
+        </div>
     @else
         <div class="absolute inset-0" style="background: {{ $bg }}" aria-hidden="true">
             <svg viewBox="0 0 100 100" class="absolute inset-0 size-full" preserveAspectRatio="none">
