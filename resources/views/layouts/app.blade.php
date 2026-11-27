@@ -30,7 +30,7 @@
         {{-- @include('partials.mini-player') --}}
         {{-- @include('partials.player') --}}
 
-        <x-now-playing-bar />
+        <x-now-playing-bar :now-playing="$nowPlaying" />
 
         @include('partials.bottom-nav')
     </div>

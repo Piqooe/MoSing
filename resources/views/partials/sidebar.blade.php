@@ -4,6 +4,7 @@
         ['label' => 'Search', 'icon' => 'search', 'href' => route('search'), 'active' => request()->routeIs('search')],
     ];
     $libraryFilters = ['Playlists', 'Artists', 'Albums'];
+    $libraryEmpty = fn ($item) => false;
 
     // Ambil playlist asli milik user yang sedang login (jika ada)
     $myPlaylists = auth()->check()
@@ -31,7 +32,7 @@
 <aside class="hidden w-[72px] shrink-0 flex-col overflow-hidden rounded-lg bg-sidebar md:flex lg:w-72" aria-label="Sidebar">
 
     {{-- SIDEBAR COMPACT (TABLET / MD) --}}
-    <div class="flex h-full flex-col items-center gap-2.5 overflow-y-auto px-3 py-5 scrollbar-none lg:hidden">
+    <div data-sidebar-scroll="compact" class="flex h-full flex-col items-center gap-2.5 overflow-y-auto px-3 py-5 scrollbar-none lg:hidden">
         <a href="{{ route('home') }}" class="mb-3 flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent" aria-label="Vibely">
             <x-lucide-audio-waveform class="size-5 text-black" />
         </a>
@@ -117,7 +118,7 @@
             @endforeach
         </div>
 
-        <div class="-mx-1 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-1">
+        <div data-sidebar-scroll="library" class="-mx-1 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-1">
             {{-- TITIK 2: Tombol "Create Playlist" --}}
             <button type="button" onclick="{{ $createAction }}" class="flex shrink-0 items-center gap-3 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-card cursor-pointer">
                 <span class="flex size-12 items-center justify-center rounded border border-border bg-card">
