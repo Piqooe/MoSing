@@ -1,4 +1,4 @@
-@props(['song', 'index' => 1, 'playing' => false, 'meta' => null])
+@props(['song', 'index' => 1, 'playing' => false, 'meta' => null, 'removeAction' => null])
 
 @php
     $grid = 'grid-cols-[minmax(0,1fr)_32px_18px] md:grid-cols-[32px_minmax(0,1fr)_minmax(0,180px)_32px_56px_18px] xl:grid-cols-[32px_minmax(0,1fr)_240px_140px_32px_56px_18px]';
@@ -49,8 +49,19 @@
 
     <span class="hidden text-sm text-text-secondary tabular-nums md:block">{{ \App\Support\Format::duration($song->duration) }}</span>
 
-    <button type="button" aria-label="More options for {{ $song->title }}"
-        class="flex size-[18px] items-center justify-center text-text-secondary transition-opacity hover:text-white md:text-white md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100">
-        <x-lucide-ellipsis class="size-[18px]" />
-    </button>
+    @if ($removeAction)
+        <form method="POST" action="{{ $removeAction }}" class="flex">
+            @csrf
+            @method('DELETE')
+            <button type="submit" aria-label="Hapus {{ $song->title }} dari playlist"
+                class="flex size-[18px] items-center justify-center text-text-secondary transition-colors hover:text-danger">
+                <x-lucide-trash-2 class="size-[18px]" />
+            </button>
+        </form>
+    @else
+        <button type="button" aria-label="More options for {{ $song->title }}"
+            class="flex size-[18px] items-center justify-center text-text-secondary transition-opacity hover:text-white md:text-white md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100">
+            <x-lucide-ellipsis class="size-[18px]" />
+        </button>
+    @endif
 </div>

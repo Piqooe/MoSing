@@ -1,4 +1,4 @@
-@props(['song', 'index' => 1, 'action' => 'Add'])
+@props(['song', 'index' => 1, 'action' => 'Add', 'addAction' => null])
 
 <div {{ $attributes->class([
     'group grid h-14 items-center gap-3 rounded-md px-2 transition-colors duration-150 hover:bg-card-hover md:gap-4 md:px-4',
@@ -21,8 +21,14 @@
 
     <a href="#" class="hidden truncate text-sm text-text-secondary group-hover:text-white hover:underline md:block">{{ $song->album->title }}</a>
 
-    <button type="button" aria-label="{{ $action }} {{ $song->title }} to this playlist"
-        class="h-8 rounded-lg border border-outline px-4 text-[13px] font-bold text-white transition hover:scale-105 hover:border-white">
-        {{ $action }}
-    </button>
+    @if ($addAction)
+        <form method="POST" action="{{ $addAction }}">
+            @csrf
+            <input type="hidden" name="song_id" value="{{ $song->id }}">
+            <button type="submit" aria-label="{{ $action }} {{ $song->title }} to this playlist"
+                class="h-8 rounded-lg border border-outline px-4 text-[13px] font-bold text-white transition hover:scale-105 hover:border-white">
+                {{ $action }}
+            </button>
+        </form>
+    @endif
 </div>

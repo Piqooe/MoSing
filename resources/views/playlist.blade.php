@@ -70,7 +70,8 @@
                 @foreach ($songs as $song)
                     <x-track-row :song="$song" :index="$song->pivot->position ?? $loop->iteration"
                         :playing="$song->id === $nowPlaying?->id"
-                        :meta="Format::dateAdded($song->pivot->created_at ?? null)" />
+                        :meta="Format::dateAdded($song->pivot->created_at ?? null)"
+                        :remove-action="($isOwner ?? false) ? route('playlists.songs.destroy', [$playlist, $song]) : null" />
                 @endforeach
             </div>
         </section>
@@ -79,19 +80,44 @@
             <div class="hidden h-px bg-border md:block"></div>
             <x-empty-state icon="music" title="This playlist is empty" message="Find songs you love and add them here."
                 class="mx-auto mt-6 max-w-[420px] md:mt-12">
-                <x-button variant="primary" icon="search" :href="route('search')">Find songs</x-button>
+                <x-button variant="primary" icon="search" :href="($isOwner ?? false) ? '#playlist-song-search' : route('search')">Find songs</x-button>
             </x-empty-state>
         </section>
     @endif
 
-    @if ($recommended->isNotEmpty())
-        <section class="flex flex-col gap-4 px-2 pt-6 pb-10 md:px-6">
-            <x-section-header title="Recommended" href="#" link-text="Refresh" class="px-2 md:px-0"
-                :eyebrow="$hasSongs ? 'Based on what\'s in this playlist' : 'Popular with listeners like you'" />
+    @php
+        $owner = $isOwner ?? false;
+        $searching = $owner && filled($search ?? null);
+        $suggestions = $searching ? $availableSongs : $recommended;
+    @endphp
+
+    @if ($owner || $recommended->isNotEmpty())
+        <section class="flex flex-col gap-4 px-2 pt-6 pb-10 md:px-6" aria-label="Recommended">
+            @if ($searching)
+                <x-section-header title="Search results" :href="route('playlists.show', $playlist)" link-text="Clear" class="px-2 md:px-0"
+                    :eyebrow="'Results for “'.$search.'”'" />
+            @else
+                <x-section-header title="Recommended" :href="route('playlists.show', $playlist)" link-text="Refresh" class="px-2 md:px-0"
+                    :eyebrow="$hasSongs ? 'Based on what\'s in this playlist' : 'Popular with listeners like you'" />
+            @endif
+
+            @if ($owner)
+                <form method="GET" action="{{ route('playlists.show', $playlist) }}" role="search" class="flex max-w-[440px] gap-2 px-2 md:px-0">
+                    <input id="playlist-song-search" type="search" name="q" value="{{ $search }}" placeholder="Search for songs or artists" autocomplete="off"
+                        class="h-10 w-full min-w-0 rounded-md border border-border bg-card px-3.5 text-sm text-white placeholder:text-text-secondary focus:border-accent focus:outline-none">
+                    <x-button type="submit" variant="secondary">Search</x-button>
+                </form>
+            @endif
+
             <div class="flex flex-col">
-                @foreach ($recommended as $song)
-                    <x-track-suggestion :song="$song" :index="$loop->iteration" />
-                @endforeach
+                @forelse ($suggestions as $song)
+                    <x-track-suggestion :song="$song" :index="$loop->iteration"
+                        :add-action="$owner ? route('playlists.songs.store', $playlist) : null" />
+                @empty
+                    <p class="px-2 text-sm text-text-secondary md:px-4">
+                        {{ $searching ? 'No songs match your search.' : 'Every available song is already in this playlist.' }}
+                    </p>
+                @endforelse
             </div>
         </section>
     @endif
